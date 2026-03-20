@@ -1,12 +1,14 @@
-const express = require('express');
-const userRoutes = require('./routes/users')
-const userPosts = require('./routes/Posts')
+import express from 'express'
+import userRoutes from './routes/users.js'
+import userPosts from './routes/posts.js'
+import dotenv from 'dotenv'
 const app = express();
 
-require('dotenv').config()
-const cors = require('cors')
-const morgan = require('morgan')
-const mongoose = require('mongoose')
+dotenv.config()
+
+import cors from 'cors'
+import morgan from 'morgan'
+import mongoose from 'mongoose'
 
 const PORT =  process.env.PORT || 5000
 

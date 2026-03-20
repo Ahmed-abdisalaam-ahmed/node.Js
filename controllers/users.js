@@ -1,12 +1,11 @@
+import User from '../module/User.js'
 
-const User = require('../module/User')
-
-exports.getUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
     const users = await User.find()
     res.json(users)
 }
 
-exports.getUserInfo = (req , res) => {
+export const getUserInfo = (req , res) => {
     const user = users.find(u => u.id == req.params.id)
 
     if(!user) return res.status(404).send("User not Found")
@@ -14,7 +13,7 @@ exports.getUserInfo = (req , res) => {
     res.json(user)
 }
 
-exports.createUser = async (req, res) => {
+export const createUser = async (req, res) => {
 
     console.log("body info", req.body)
 
@@ -25,7 +24,7 @@ exports.createUser = async (req, res) => {
     res.status(201).json(saved)
 }
 
-exports.updateUser = async (req, res) => {
+export const updateUser = async (req, res) => {
     const {id} = req.params;
 
     try {
@@ -41,7 +40,7 @@ exports.updateUser = async (req, res) => {
     }
 }
 
-exports.deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
     const {id} = req.params;
 
     try {
