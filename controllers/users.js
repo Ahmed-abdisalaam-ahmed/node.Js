@@ -5,12 +5,18 @@ export const getUsers = async (req, res) => {
     res.json(users)
 }
 
-export const getUserInfo = (req , res) => {
-    const user = users.find(u => u.id == req.params.id)
+export const getUserInfo = async (req , res) => {
+
+    try {
+     const user =await User.findById(req.params.id);
 
     if(!user) return res.status(404).send("User not Found")
 
-    res.json(user)
+      res.json(user)
+    } catch (error) {
+        res.status(500).send("server is down")
+    }
+
 }
 
 export const createUser = async (req, res) => {

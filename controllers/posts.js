@@ -4,10 +4,13 @@ let posts = [
 ];
 
 export const getPosts = (req, res) => {
+
     res.json(posts)
+    
 }
 
 export const getPostsInfo = (req , res) => {
+
     const post = posts.find(p => p.id == req.params.id)
 
     if(!post) return res.status(404).send("post not Found")

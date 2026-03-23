@@ -9,6 +9,7 @@ dotenv.config()
 import cors from 'cors'
 import morgan from 'morgan'
 import mongoose from 'mongoose'
+import { logger } from './middlewares/logger.js';
 
 const PORT =  process.env.PORT || 5000
 
@@ -18,11 +19,11 @@ const PORT =  process.env.PORT || 5000
 // DELETE
 
 // Simple in-memory data
-let users = [
-  { id: 1, name: 'Ayaan' },
-  { id: 2, name: 'Fatima' },
-  { id: 3, name: 'Zubeyr' }
-];
+// let users = [
+//   { id: 1, name: 'Ayaan' },
+//   { id: 2, name: 'Fatima' },
+//   { id: 3, name: 'Zubeyr' }
+// ];
 
 // middleware
 app.use(express.json())
@@ -33,6 +34,8 @@ app.use(cors(
     }
 ))
 app.use(morgan('combined'))
+// custom middleware
+app.use(logger)
 
 // routers midleware
 
