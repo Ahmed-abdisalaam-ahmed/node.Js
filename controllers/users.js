@@ -1,4 +1,5 @@
 import User from '../module/User.js'
+import { generateToken } from '../utils/generateToken.js'
 
 export const getUsers = async (req, res) => {
     const users = await User.find()
