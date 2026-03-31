@@ -1,11 +1,10 @@
-// Register new user 
-
 import User from "../module/User.js";
 import { generateToken } from "../utils/generateToken.js";
 
+// Register new user 
 export const register = async (req, res, next) => {
 
-    let {name, email, password} = req.body;
+    let {name, email, password, role} = req.body;
 
     try {
         // checking  if user exist
@@ -14,7 +13,7 @@ export const register = async (req, res, next) => {
 
         if(exists) return res.status(400).json({ message : 'Email already in user'})
         // if not exist then create a user
-        const user = await User.create({name, password, email})
+        const user = await User.create({name, password, email,role})
 
         const token = generateToken(user.id)
 
@@ -27,7 +26,6 @@ export const register = async (req, res, next) => {
 }
 
 // login a user
-
 export const login = async (req, res, next) => {
     let {email, password} = req.body;
     try {

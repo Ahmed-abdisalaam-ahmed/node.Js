@@ -9,7 +9,8 @@ router.post('/login', login)
 // Protected Routes
 
 router.get('/protect', protect, (req, res) => {
-    res.json("Protected route")
+    console.log("req.user", req.user)
+    res.json(req.user)
 })
 
 export default router

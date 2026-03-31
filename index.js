@@ -2,6 +2,7 @@ import express from 'express'
 import userRoutes from './routes/users.js'
 import postsRoutes from './routes/posts.js'
 import authRoutes from './routes/auth.js'
+import adminRoutes from './routes/admin.js'
 import dotenv from 'dotenv' 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use(cors(
     }
 ))
 app.use(morgan('dev'))
+
 // custom middleware
 app.use(logger)
 
@@ -45,22 +47,22 @@ app.use(logger)
 app.use('/users', userRoutes);
 app.use('/posts', postsRoutes);
 app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes)
 
 // Read 
 app.get('/', (req,res) => {
-    res.json(users)
+    res.json("Api is Running....")
 })
 
 // Error middleware halak danbe gali si anu cilad u noqon
 app.use(notFound)
-
 app.use(errorHandler)
+
 // connect mongodb
 mongoose.connect(process.env.MONGO_URI)
-    .then(()=> console.log("✅ mongoDb connected locally"))
+    .then(()=> 
+        console.log("✅ mongoDb connected locally"), 
+        app.listen(PORT, () => {
+        console.log(`🚀 Server is Running on Port http//localhost:${PORT}`)
+    }))
     .catch((err)=> console.log("❌ connection err:",err))
-
-
-app.listen(PORT, () => {
-    console.log(`Server is Running on http//localhost:${PORT}`)
-})
