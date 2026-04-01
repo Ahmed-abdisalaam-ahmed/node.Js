@@ -4,6 +4,6 @@ import { authorize } from '../middlewares/authorize.js';
 
 const router = express.Router()
 router.get('/dashboard', protect, authorize('admin') ,(req, res)=> {
-    res.json("wellcome to dashboard! Ahmed")
+    res.json(`wellcome to dashboard! ,${req.user.name}`)
 })
 export default router

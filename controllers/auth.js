@@ -39,7 +39,7 @@ export const login = async (req, res, next) => {
         res.status(200).json({token})   
 
     } catch (err) {
-        console.log(err)
+        console.log( "error for a login in",err)
         next(err)
     }
 }
