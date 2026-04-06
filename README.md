@@ -1,4 +1,4 @@
-# 🌐 **Lesson 2: Intro to Express.js – The Fast Way to Build APIs**
+# 🌐 **Intro to Express.js – The Fast Way to Build APIs**
 
 ---
 
