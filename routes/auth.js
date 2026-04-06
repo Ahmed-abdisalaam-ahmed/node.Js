@@ -1,9 +1,11 @@
 import express from 'express'
 import { login, register } from '../controllers/auth.js'
 import { protect } from '../middlewares/auth.js'
+import { validate } from '../middlewares/validateZod.js'
+import { createUserschema } from '../Schemas/userSchema.js'
 const router = express.Router()
 
-router.post('/register', register)
+router.post('/register', validate(createUserschema),register)
 router.get('/login', login)
 
 // Protected Routes

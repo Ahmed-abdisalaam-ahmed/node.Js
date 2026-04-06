@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["user", "admin"],
         default: "user"
-    }
+    },
+    profile: String,
 })
 
 // hash before sawing the pasword 

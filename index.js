@@ -3,6 +3,7 @@ import userRoutes from './routes/users.js'
 import postsRoutes from './routes/posts.js'
 import authRoutes from './routes/auth.js'
 import adminRoutes from './routes/admin.js'
+import uploadRoutes from './routes/upload.js'
 import dotenv from 'dotenv' 
 const app = express();
 
@@ -48,9 +49,10 @@ app.use('/users', userRoutes);
 app.use('/posts', postsRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes)
+app.use('/upload', uploadRoutes)
 
 // Read 
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
     res.json("Api is Running....")
 })
 
