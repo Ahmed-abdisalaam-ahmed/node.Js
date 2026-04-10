@@ -4,6 +4,7 @@ import postsRoutes from './routes/posts.js'
 import authRoutes from './routes/auth.js'
 import adminRoutes from './routes/admin.js'
 import uploadRoutes from './routes/upload.js'
+import tasksRoutes from './routes/task.js'
 import dotenv from 'dotenv' 
 const app = express();
 
@@ -15,6 +16,11 @@ import mongoose from 'mongoose'
 import { logger } from './middlewares/logger.js';
 import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import helmet from 'helmet'
+import { swaggerSpec } from './utils/swagger.js'
+import swaggerUi from 'swagger-ui-express'
+import rateLimit from 'express-rate-limit'
+import { limiter } from './middlewares/rateLimiter.js'
 
 const PORT =  process.env.PORT || 5000
 
@@ -33,15 +39,27 @@ const PORT =  process.env.PORT || 5000
 // middleware
 app.use(express.json())
 
+// cors
 app.use(cors(
     {
-        origin: ["dugsiiye.com", "shihabi.com"]
+        origin: ["http://localhost:5000", "shihabi.com"]
     }
 ))
-app.use(morgan('dev'))
+// helmet
+app.use(helmet())
+
+// morgan
+if(process.env.NODE_ENV == "development"){
+    app.use(morgan('dev'))
+}
+// swagger docs
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // custom middleware
 app.use(logger)
+
+//midaleware limitRate
+app.use(limiter) 
 
 // routers midleware
 
@@ -50,6 +68,7 @@ app.use('/posts', postsRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes)
 app.use('/upload', uploadRoutes)
+app.use('/tasks', tasksRoutes)
 
 // Read 
 app.get('/', (req, res) => {
@@ -61,7 +80,7 @@ app.use(notFound)
 app.use(errorHandler)
 
 // connect mongodb
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect( process.env.NODE_ENV == "development" ? process.env.MONGO_URI_DEV : process.env.MONGO_URI_PRO)
     .then(()=> 
         console.log("✅ mongoDb connected locally"), 
         app.listen(PORT, () => {
