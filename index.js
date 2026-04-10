@@ -79,10 +79,24 @@ app.use(notFound)
 app.use(errorHandler)
 
 // connect mongodb
-mongoose.connect( process.env.NODE_ENV == "development" ? process.env.MONGO_URI_DEV : process.env.MONGO_URI_PRO)
-    .then(()=> 
-        console.log("✅ mongoDb connected locally"), 
+const connectionString = process.env.NODE_ENV === "development" 
+    ? process.env.MONGO_URI_DEV 
+    : process.env.MONGO_URI_PRO;
+
+// Log which environment we are in (Check your Render logs for this!)
+console.log(`Attempting to connect in ${process.env.NODE_ENV} mode...`);
+
+if (!connectionString) {
+    console.error("❌ ERROR: Connection string is undefined. Check your Environment Variables!");
+}
+
+mongoose.connect(connectionString)
+    .then(() => {
+        console.log("✅ MongoDB Connected Successfully");
         app.listen(PORT, () => {
-        console.log(`🚀 Server is Running on Port http//localhost:${PORT}`)
-    }))
-    .catch((err)=> console.log("❌ connection err:",err))
+            console.log(`🚀 Server is Running on Port: ${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error("❌ Connection Error:", err.message);
+    });
