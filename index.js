@@ -19,7 +19,6 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import helmet from 'helmet'
 import { swaggerSpec } from './utils/swagger.js'
 import swaggerUi from 'swagger-ui-express'
-import rateLimit from 'express-rate-limit'
 import { limiter } from './middlewares/rateLimiter.js'
 
 const PORT =  process.env.PORT || 5000
