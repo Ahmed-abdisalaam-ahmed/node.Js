@@ -17,7 +17,7 @@ export const register = async (req, res, next) => {
 
         const token = generateToken(user.id)
 
-        res.status(201).json({token})
+        res.status(201).json({token, user})
 
     } catch (err) {
         console.log(err)
@@ -36,7 +36,7 @@ export const login = async (req, res, next) => {
         }
         console.log("user info", user)
         const token = generateToken(user._id)
-        res.status(200).json({token})   
+        res.status(200).json({token, user})   
 
     } catch (err) {
         console.log( "error for a login in",err)

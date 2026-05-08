@@ -2,7 +2,7 @@ import Task from "../module/Task.js";
 
 export const createTask = async(req, res, next) => {
     try {
-            const task = await Task.create({...req.body, createdBy: req.user._id})
+            const task = await Task.create({...req.body, createdBy: "69d3da3ce11c26fcf13e254a"})
             res.status(201).json(task)
     } catch (err) {
             next(err)
@@ -11,7 +11,7 @@ export const createTask = async(req, res, next) => {
 
 export const getMyTask = async (req, res, next) => {
         try {
-                const tasks = await Task.find({createdBy: req.user._id})
+                const tasks = await Task.find().sort({createdAt : -1 })
                 res.status(200).json(tasks)
         } catch (err) {
                 next(err)

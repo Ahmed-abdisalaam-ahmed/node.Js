@@ -1,0 +1,102 @@
+import express from 'express'
+import userRoutes from './routes/users.js'
+import postsRoutes from './routes/posts.js'
+import authRoutes from './routes/auth.js'
+import adminRoutes from './routes/admin.js'
+import uploadRoutes from './routes/upload.js'
+import tasksRoutes from './routes/task.js'
+import dotenv from 'dotenv' 
+const app = express();
+
+dotenv.config()
+
+import cors from 'cors'
+import morgan from 'morgan'
+import mongoose from 'mongoose'
+import { logger } from './middlewares/logger.js';
+import { notFound } from './middlewares/notFound.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import helmet from 'helmet'
+import { swaggerSpec } from './utils/swagger.js'
+import swaggerUi from 'swagger-ui-express'
+import { limiter } from './middlewares/rateLimiter.js'
+
+const PORT =  process.env.PORT || 5000
+
+// GET 
+// POST
+// PUT
+// DELETE
+
+// Simple in-memory data
+// let users = [
+//   { id: 1, name: 'Ayaan' },
+//   { id: 2, name: 'Fatima' },
+//   { id: 3, name: 'Zubeyr' }
+// ];
+
+// middleware
+app.use(express.json())
+
+// cors
+app.use(cors(
+    {
+        origin: ["http://localhost:5000", "shihabi.com", "http://localhost:5173"]
+    }
+))
+// helmet
+app.use(helmet())
+
+// morgan
+if(process.env.NODE_ENV == "development"){
+    app.use(morgan('dev'))
+}
+// swagger docs
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// custom middleware
+app.use(logger)
+
+//midaleware limitRate
+app.use(limiter) 
+
+// routers midleware
+
+app.use('/api/users', userRoutes);
+app.use('/api/posts', postsRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes)
+app.use('/api/upload', uploadRoutes)
+app.use('/api/tasks', tasksRoutes)
+
+// Read 
+app.get('/api/health', (req, res) => {
+    res.json("Api is Running....")
+})
+
+// Error middleware halak danbe gali si anu cilad u noqon
+app.use(notFound)
+app.use(errorHandler)
+
+// connect mongodb
+const connectionString = process.env.NODE_ENV === "development" 
+    ? process.env.MONGO_URI_DEV 
+    : process.env.MONGO_URI_PRO;
+
+// Log which environment we are in (Check your Render logs for this!)
+console.log(`Attempting to connect in ${process.env.NODE_ENV} mode...`);
+
+if (!connectionString) {
+    console.error("❌ ERROR: Connection string is undefined. Check your Environment Variables!");
+}
+
+mongoose.connect(connectionString)
+    .then(() => {
+        console.log("✅ MongoDB Connected Successfully");
+        app.listen(PORT, () => {
+            console.log(`🚀 Server is Running on Port: http://localhost:${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error("❌ Connection Error:", err.message);
+    });

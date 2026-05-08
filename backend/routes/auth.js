@@ -2,7 +2,7 @@ import express from 'express'
 import { login, register } from '../controllers/auth.js'
 import { protect } from '../middlewares/auth.js'
 import { validate } from '../middlewares/validateZod.js'
-import { createUserschema } from '../Schemas/userSchema.js'
+import { createUserSchema } from '../Schemas/userSchema.js'
 const router = express.Router()
 
 /**
@@ -33,7 +33,7 @@ const router = express.Router()
  *         description: User registered
  */
 
-router.post('/register', validate(createUserschema), register)
+router.post('/register', validate(createUserSchema), register)
 /**
  * @swagger
  * /auth/login:
@@ -58,7 +58,7 @@ router.post('/register', validate(createUserschema), register)
  *       200:
  *         description: Login successful, returns JWT token
  */
-router.get('/login', login)
+router.post('/login', login)
 
 // Protected Routes
 /**
@@ -73,8 +73,9 @@ router.get('/login', login)
  *       200:
  *         description: Current user info
  */
-router.get('/protect', protect, (req, res) => {
+router.get('/protect', protect, async(req, res) => {
     console.log("req.user", req.user)
+    // await new Promise(resolve => setTimeout(resolve, 5000))
     res.json(req.user)
 })
 
