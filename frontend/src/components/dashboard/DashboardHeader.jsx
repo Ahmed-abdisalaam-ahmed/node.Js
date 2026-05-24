@@ -2,10 +2,22 @@ import useAuthStore from '@/lib/store/authStore'
 import { ClipboardCheck } from 'lucide-react'
 import React from 'react'
 import { Button } from '@/components/ui/button'
+import { replace, useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 
 const DashboardHeader = () => {
 
-  const {user, clearAuth} = useAuthStore()
+  const {user, setCleanAuth} = useAuthStore()
+  const queryClient = useQueryClient();
+  const navigate = useNavigate()
+
+  const handleLogOut = () => {
+    if(confirm("Are you sure you want to logout ? ")){
+      setCleanAuth();
+      queryClient.clear();
+      return navigate("/login", {replace: true})
+    }
+  }
 
   handleLogout
   return (
@@ -26,7 +38,7 @@ const DashboardHeader = () => {
           <span className='text-sm text-muted-foreground'>
             Welcome, <span className='font-medium text-foreground'>{user?.name || "User"}</span>
           </span>
-                <Button variant={"underline"} onClick={handleLogout}>Login</Button>
+                <Button variant={"underline"} onClick={handleLogOut}>Login</Button>
         </div>     
       </div>
     </header>

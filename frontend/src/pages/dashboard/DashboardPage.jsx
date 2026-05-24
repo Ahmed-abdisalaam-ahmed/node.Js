@@ -1,7 +1,65 @@
 import DashboardHeader from '@/components/dashboard/DashboardHeader'
-import React from 'react'
+import DashboardWelcome from '@/components/dashboard/DashboardWelcome'
+import TaskForm from '@/components/tasks/TaskForm'
+import TaskList from '@/components/tasks/TaskList'
+import api from '@/lib/api/apiClient'
+import Task from '@/Task'
+import { useQuery } from '@tanstack/react-query'
+import { Loader } from 'lucide-react'
+import React, { useState } from 'react'
 
 const DashboardPage = () => {
+
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingTask , setEditingTask] = useState(null);
+
+  const handleForClose = () => {
+    setShowCreateForm(false);
+    setEditingTask(null)
+  }
+  const handleCreateTaskClick  = () => {
+    setShowCreateForm(true);
+  }
+
+  const taskQuery = useQuery({
+    queryKey: ['tasks'],
+    queryFn: async () => {
+      const response = await api.get('/tasks/get');
+      return response.data;
+    }
+  })
+
+  const handleEditTask = (task) => {
+    setEditingTask(task);
+    setShowCreateForm(true);
+  } 
+
+  const handleDeleteTask = async (taskId) => {
+    // tODO: MUTATION DELETE TASK
+
+
+  }
+
+  const handleStatusChange = async (taskId, newStatus) => {
+    // Toto: MUTATION UPDATE TASK STATUS
+    // 1. Make API call to update task status
+    // 2. Refetch tasks after successful update
+    // 3. Handle loading and error states as needed
+    // Example:
+    // try {
+    //   await api.put(`/tasks/update/${taskId}`, { status: newStatus });
+    //   taskQuery.refetch(); // Refetch tasks after updating status
+    // } catch (error) {
+    //   console.error('Failed to update task status:', error);
+    // }
+  }
+  if(taskQuery.isLoading) {
+    return (
+      <div className="flex h-screen  items-center justify-center">
+          <Loader className=" animate-spin"/>
+      </div>
+    )
+  }
   return (
     <div className='min-h-screen bg-background'>
 
@@ -9,15 +67,33 @@ const DashboardPage = () => {
         <DashboardHeader />
 
         {/* main content */}
-
         <main>
 
           {/* welcome Section */}
+          <DashboardWelcome 
+            showCreateForm={showCreateForm}
+            onCreateTask={handleCreateTaskClick}
+          />
+
           {/* Tasks Section */}
+          <div>
+            <TaskList
+              tasks={taskQuery.data || []}
+              isLoading={taskQuery.isLoading}
+              isEdit={handleEditTask}
+              isDelete={handleDeleteTask}
+              onStatusChange={handleStatusChange}
+
+            />
+          </div>
 
         </main>
 
           {/* task Dialog form*/}
+          <TaskForm 
+            open={showCreateForm || !!editingTask}
+            onOpenChange={handleForClose}
+          />
 
     </div>
   )

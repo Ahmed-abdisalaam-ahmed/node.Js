@@ -21,7 +21,7 @@ const useAuthStore = create(
             }),
 
             // clean data after log out
-            setCleanAuth: () => ({
+            setCleanAuth: () => set({
                 user:null,
                 token:null,
                 isAuthenticated:false

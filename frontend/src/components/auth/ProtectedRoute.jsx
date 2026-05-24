@@ -14,11 +14,7 @@ const ProtectedRoute = ({ children }) => {
     const {data, error, isError, isLoading, isSuccess} = useQuery({
         queryKey: ['currentUser', token],
         queryFn: async () => {
-            const response = await api.get("/auth/protect", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            const response = await api.get("/auth/protect");
             return response.data
         },
         enabled: !!token,
