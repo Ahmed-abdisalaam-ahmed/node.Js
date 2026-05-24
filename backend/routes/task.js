@@ -17,7 +17,7 @@ const router = express.Router();
  *              description: A List of tasks
  */
 
-router.post('/create', createTask);
+router.post('/create', protect, createTask);
 /**
  * @swagger
  * /tasks/create:
@@ -48,7 +48,7 @@ router.post('/create', createTask);
  *       201:
  *         description: Task created
  */
-router.get('/get', getMyTask)
+router.get('/get', protect, getMyTask)
 /**
  * @swagger
  * /tasks/update/{id}:

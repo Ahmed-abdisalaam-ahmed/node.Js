@@ -74,7 +74,7 @@ app.get('/api/health', (req, res) => {
     res.json("Api is Running....")
 })
 
-// Error middleware halak danbe gali si anu cilad u noqon
+// Error middleware xalka danbe gali si anu cilad u noqon
 app.use(notFound)
 app.use(errorHandler)
 
