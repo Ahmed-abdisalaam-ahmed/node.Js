@@ -28,7 +28,7 @@ const TASK_STATUSES = [
 ];
 
 
-const TaskForm = ({ task, open = true, onOpenChange }) => {
+const TaskForm = ({ task, open = true ,onOpenChange }) => {
 
 
     // State for form values
@@ -40,7 +40,30 @@ const TaskForm = ({ task, open = true, onOpenChange }) => {
         dueDate: ''
     })
     
-    const [validationError, setValidationError] = useState(null)
+    const [validationError, setValidationError] = useState(null);
+
+    const queryClient = useQueryClient();
+
+    useEffect(()=>{
+        if(task){
+
+        setFormValues({
+            title: task.title || "",
+            description: task.description ||  "",
+            status: task.status || "pending",
+            dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ""
+        })
+        }else{
+            setFormValues({
+            title: '',
+            description: '',
+            status: 'pending',
+            dueDate: ''
+            })
+        }
+        setValidationError(null);
+
+    },[task ,open])
 
     const {token} = useAuthStore()
 
@@ -67,7 +90,7 @@ const TaskForm = ({ task, open = true, onOpenChange }) => {
     }
 
     // create mutation
-    const createMutation = useMutation ({
+    const createTaskMutation = useMutation ({
         mutationFn: async(taskData) => {
             const response = await api.post('/tasks/create', taskData, {
                 headers: {
@@ -81,6 +104,35 @@ const TaskForm = ({ task, open = true, onOpenChange }) => {
         },
         onError: (error) => {
             console.error("Error creating Task, Try again", error)
+        }
+    })
+
+    const updateTaskMutation = useMutation({
+            mutationFn: async(taskData) => {
+            const response = await api.put(`/tasks/update/${task._id}`, taskData, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            return response;
+        },
+        onSuccess: (data) => {
+            console.log("Task created successfully:", data)
+            toast.success("Task updated successfully", {description : "Your task has been updated"})
+            queryClient.invalidateQueries(['tasks']);
+            onOpenChange?.(false)
+            setFormValues({
+                title: '',
+                description: '',
+                status: 'pending',
+                dueDate: ''
+            })
+            console.log("Task updated successfully !", data)
+        },
+        onError: (error) => {
+            console.error("Error Updating Task, Try again", error)
+            toast.error(`Error updating task: ${extractErrorMessage(error)}`, {description: " Please try again!"})
+            setValidationError(extractErrorMessage(error))
         }
     })
 
@@ -98,9 +150,19 @@ const TaskForm = ({ task, open = true, onOpenChange }) => {
             status: formValues.status,
             dueDate: formValues.dueDate ? new Date(formValues.dueDate).toISOString() : null
         }
+        if(task){
+            updateTaskMutation.mutate(taskData)
+        }else{
+            createTaskMutation.mutate(taskData)
+        }
+    }   
 
-        createMutation.mutate(taskData)
-    }
+    const isLoading = createTaskMutation.isPending || updateTaskMutation.isPending
+
+    // Get display error from validation or mutation errors
+    const displayError = validationError || 
+        extractErrorMessage(createTaskMutation.error) ||
+        extractErrorMessage(updateTaskMutation.error)
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -118,11 +180,11 @@ const TaskForm = ({ task, open = true, onOpenChange }) => {
 
                 <form  onSubmit={handleSubmit} className="space-y-6">
 
-                    {/* {displayError && (
+                    {displayError && (
                         <div className="p-3 bg-destructive/10 text-destructive text-sm rounded-md">
                             {displayError}
                         </div>
-                    )} */}
+                    )}
 
                     <div className="space-y-2">
                         <Label htmlFor="title">Title *</Label>
@@ -184,12 +246,8 @@ const TaskForm = ({ task, open = true, onOpenChange }) => {
                         <Button type="button" variant="outline" onClick={handleCancel}>
                             Cancel
                         </Button>
-                        <Button type="submit" variant="outline" >
-                            submit
-                        </Button>
 
-
-                        {/* <Button type="submit" disabled={isLoading}>
+                        <Button type="submit" disabled={isLoading}>
                             {isLoading ? (
                                 <span className="flex items-center gap-2">
                                     <Loader size="sm" />
@@ -198,7 +256,7 @@ const TaskForm = ({ task, open = true, onOpenChange }) => {
                             ) : (
                                 task ? 'Update Task' : 'Create Task'
                             )}
-                        </Button> */}
+                        </Button>
 
                     </DialogFooter>
 
