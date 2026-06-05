@@ -10,6 +10,12 @@ import TasksCard from './TasksCard';
 const TaskList = ({tasks = [], isLoading = false, onEdit , onStatusChange }) => {
     const [SearchTerm, setSearchTerm] = useState("");
 
+
+    const filteredTasks = tasks.filter(task => {
+      const matchesSearch = task.title.toLowerCase().includes(SearchTerm.toLowerCase()) || (task.description && task.description.toLowerCase().includes(SearchTerm.toLowerCase()))
+      return matchesSearch
+    })
+
     const getTaskStats = () => {
 
       const AllTasksByStatus = {
@@ -18,10 +24,10 @@ const TaskList = ({tasks = [], isLoading = false, onEdit , onStatusChange }) => 
         completed :tasks.filter(task => task.status === 'completed').length
       }
       const categorizedTasks = {
-        all: tasks,
-        pending: tasks.filter(task => task.status === 'pending'),
-        inProgress: tasks.filter(task => task.status === 'in_progress'),
-        completed: tasks.filter(task => task.status === 'completed')
+        all: filteredTasks,
+        pending: filteredTasks.filter(task => task.status === 'pending'),
+        inProgress: filteredTasks.filter(task => task.status === 'in_progress'),
+        completed: filteredTasks.filter(task => task.status === 'completed')
       }
 
       const stats = {
