@@ -66,7 +66,6 @@ const ProtectedRoute = ({ children }) => {
         return <Navigate to="/login"  state={{from : location}} replace/>
     }
 
-    console.log("user", user)
     return children;
 }
 

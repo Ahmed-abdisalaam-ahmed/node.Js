@@ -42,7 +42,6 @@ const LoginForm = () => {
       const loginMutation = useMutation({
         mutationFn: async(credentials) => {
           const Response = await api.post('/auth/login', credentials);
-          console.log("respond data", Response)
           return Response.data
         },  
         onSuccess: (data) => {

@@ -8,6 +8,8 @@ import tasksRoutes from './routes/task.js'
 import dotenv from 'dotenv' 
 const app = express();
 
+import path from 'path'
+
 dotenv.config()
 
 import cors from 'cors'
@@ -28,20 +30,13 @@ const PORT =  process.env.PORT || 5000
 // PUT
 // DELETE
 
-// Simple in-memory data
-// let users = [
-//   { id: 1, name: 'Ayaan' },
-//   { id: 2, name: 'Fatima' },
-//   { id: 3, name: 'Zubeyr' }
-// ];
-
 // middleware
 app.use(express.json())
 
 // cors
 app.use(cors(
     {
-        origin: ["http://localhost:5000", "shihabi.com", "http://localhost:5173"]
+        origin: ["http://localhost:5000", "http://localhost:5173"]
     }
 ))
 // helmet
@@ -52,15 +47,18 @@ if(process.env.NODE_ENV == "development"){
     app.use(morgan('dev'))
 }
 // swagger docs
+
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // custom middleware
+
 app.use(logger)
 
-//midaleware limitRate
+//middleware limitRate
+
 app.use(limiter) 
 
-// routers midleware
+// routers middleware
 
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postsRoutes);
@@ -74,11 +72,26 @@ app.get('/api/health', (req, res) => {
     res.json("Api is Running....")
 })
 
-// Error middleware xalka danbe gali si anu cilad u noqon
+// Server frontend in production 
+
+if(process.env.NODE_ENV === "production"){
+    const _dirname = path.dirname(fileURLToPath(import.meta.url))
+
+    app.use(express.static(path.join(_dirname, '../frontend/dist')))
+
+    // serve the frontend app 
+    app.get(/.*/, (req, res) => {
+        res.send(path.join(_dirname, '..', 'frontend', 'dist', 'index.html'))
+    })
+}
+
+// Last Route-level middleware should be error handling middleware
+
 app.use(notFound)
 app.use(errorHandler)
 
 // connect mongodb
+
 const connectionString = process.env.NODE_ENV === "development" 
     ? process.env.MONGO_URI_DEV 
     : process.env.MONGO_URI_PRO;

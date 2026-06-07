@@ -30,9 +30,9 @@ const DashboardPage = () => {
     retry: 1,
   });
 
-  console.log("Tasks Data", taskQuery.data);
+  // console.log("Tasks Data", taskQuery.data);
 
-  console.log("Tasks Query error", taskQuery.error);
+  // console.log("Tasks Query error", taskQuery.error);
 
   const handleEditTask = (task) => {
     setEditingTask(task);
