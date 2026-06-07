@@ -1,7 +1,7 @@
 import axios from "axios";
 import useAuthStore from "../store/authStore";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://node-js-5dst.onrender.com/api";
 
 // Auth api
 
