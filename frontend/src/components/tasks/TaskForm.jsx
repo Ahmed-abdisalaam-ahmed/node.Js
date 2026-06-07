@@ -100,10 +100,21 @@ const TaskForm = ({ task, open = true ,onOpenChange }) => {
             return response;
         },
         onSuccess: (data) => {
-            console.log("Task created successfully:", data)
+            console.log("Task created successfully:", data);
+            toast.success('Task created successfully', { description: 'Your task has been created.' });
+            queryClient.invalidateQueries(['tasks']);
+            onOpenChange?.(false);
+            setFormValues({
+                title: '',
+                description: '',
+                status: 'pending',
+                dueDate: ''
+            });
         },
         onError: (error) => {
-            console.error("Error creating Task, Try again", error)
+            console.error("Error creating task:", error);
+            toast.error(`Error creating task: ${extractErrorMessage(error)}`, { description: 'Please try again.' });
+            setValidationError(extractErrorMessage(error));
         }
     })
 
