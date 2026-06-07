@@ -22,6 +22,7 @@ import helmet from 'helmet'
 import { swaggerSpec } from './utils/swagger.js'
 import swaggerUi from 'swagger-ui-express'
 import { limiter } from './middlewares/rateLimiter.js'
+import { fileURLToPath } from 'url'
 
 const PORT =  process.env.PORT || 5000
 
@@ -75,6 +76,7 @@ app.get('/api/health', (req, res) => {
 // Server frontend in production 
 
 if(process.env.NODE_ENV === "production"){
+
     const _dirname = path.dirname(fileURLToPath(import.meta.url))
 
     app.use(express.static(path.join(_dirname, '../frontend/dist')))
