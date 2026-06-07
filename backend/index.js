@@ -83,7 +83,7 @@ if(process.env.NODE_ENV === "production"){
 
     // serve the frontend app 
     app.get(/.*/, (req, res) => {
-        res.send(path.join(_dirname, '..', 'frontend', 'dist', 'index.html'))
+        res.sendFile(path.join(_dirname, '..', 'frontend', 'dist', 'index.html'))
     })
 }
 
